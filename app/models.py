@@ -2,7 +2,7 @@ import enum
 import datetime
 import uuid
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import UUID  # For UUID type, fallback to string if not PostgreSQL
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
@@ -47,6 +47,13 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.email}>"
+
+    # New: Password hashing and checking methods
+    def set_password(self, plaintext_password):
+        self.password = generate_password_hash(plaintext_password)
+
+    def check_password(self, plaintext_password):
+        return check_password_hash(self.password, plaintext_password)
 
 
 class Job(db.Model):
